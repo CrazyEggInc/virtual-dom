@@ -108,13 +108,14 @@ function patchObject(node, previous, propName, propValue) {
 
   for (var k in propValue) {
     var value = propValue[k];
-    node[propName][k] = undefinedValue.isUndefined(value) ? replacer : value;
+    value = undefinedValue.isUndefined(value) ? replacer : value;
+    node[propName][k] = value;
 
     if (propName === "style") {
       // add unparse style property
       if (node[propName].item(index) === '') {
         whitespace = index > 0 ? ' ' : '';
-        property = whitespace + k + ': ' + node[propName][k] + ';';
+        property = whitespace + k + ': ' + value + ';';
         node[propName]['cssText'] = node[propName]['cssText'] + property;
       }
     }
