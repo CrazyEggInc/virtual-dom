@@ -24,7 +24,12 @@ function applyProperties(node, props, previous) {
 
     } else if (isSoftSetHook(propValue)) {
       removeProperty(node, propName, propValue, previous);
-      setProperty(node, propName, propValue.value);
+
+      if (propValue.namespace) {
+        node.setAttributeNS(propValue.namespace, propName, propValue.value);
+      } else {
+        setProperty(node, propName, propValue.value);
+      }
 
     } else {
       if (isObject(propValue)) {
