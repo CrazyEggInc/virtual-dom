@@ -6,6 +6,7 @@ var isVNode = require("../vnode/is-vnode.js")
 var isVText = require("../vnode/is-vtext.js")
 var isWidget = require("../vnode/is-widget.js")
 var handleThunk = require("../vnode/handle-thunk.js")
+var hookProperties = require('vdom-as-json/hookProperties')
 
 module.exports = createElement
 
@@ -26,10 +27,15 @@ function createElement(vnode, opts) {
         return null
     }
 
- 
+
     var node = createElementInternal(vnode, doc);
 
     var props = vnode.properties
+
+    if (props) {
+      hookProperties(vnode.namespace, props);
+    }
+
     applyProperties(node, props)
 
     var children = vnode.children
@@ -51,12 +57,12 @@ function createElementInternal(vnode, doc) {
       doc.createElementNS(vnode.namespace, vnode.tagName);
   } catch(ex) {
     // if createElement throws invalid character error
-    // that means its an invalid tagname 
+    // that means its an invalid tagname
     // replace it with div
     if (ex.INVALID_CHARACTER_ERR === ex.code && vnode.tagName !== "DIV" ) {
       vnode.tagName = "DIV";
       return createElementInternal(vnode, doc);
-    } 
+    }
 
     throw ex;
   }
