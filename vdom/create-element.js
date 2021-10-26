@@ -6,7 +6,6 @@ var isVNode = require("../vnode/is-vnode.js")
 var isVText = require("../vnode/is-vtext.js")
 var isWidget = require("../vnode/is-widget.js")
 var handleThunk = require("../vnode/handle-thunk.js")
-var hookProperties = require('vdom-as-json/hookProperties')
 
 module.exports = createElement
 
@@ -31,10 +30,6 @@ function createElement(vnode, opts) {
     var node = createElementInternal(vnode, doc);
 
     var props = vnode.properties
-
-    if (props) {
-      hookProperties(vnode.namespace, props);
-    }
 
     applyProperties(node, props)
 
