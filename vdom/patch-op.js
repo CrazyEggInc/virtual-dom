@@ -32,6 +32,9 @@ function applyPatch(vpatch, domNode, renderOptions) {
         case VPatch.THUNK:
             return replaceRoot(domNode,
                 renderOptions.patch(domNode, patch, renderOptions))
+        case VPatch.SHADOW:
+            shadowPatch(domNode, patch, renderOptions);
+            return domNode;
         default:
             return domNode
     }
@@ -75,6 +78,14 @@ function stringPatch(domNode, leftVNode, vText, renderOptions) {
     }
 
     return newNode
+}
+
+function shadowPatch(domNode, patch, renderOptions) {
+    if (!domNode.shadowRoot) {
+        domNode.attachShadow({ mode: 'open' });
+    }
+
+    renderOptions.patch(domNode.shadowRoot, patch, renderOptions);
 }
 
 function widgetPatch(domNode, leftVNode, widget, renderOptions) {

@@ -42,12 +42,25 @@ function walk(a, b, patch, index) {
         if (isVNode(a)) {
             if (a.tagName === b.tagName &&
                 a.namespace === b.namespace &&
-                a.key === b.key) {
+                a.key === b.key &&
+                ((a.shadowRoot && b.shadowRoot) || (!a.shadowRoot && !b.shadowRoot))) {
                 var propsPatch = diffProps(a.properties, b.properties)
                 if (propsPatch) {
                     apply = appendPatch(apply,
                         new VPatch(VPatch.PROPS, a, propsPatch))
                 }
+
+                if (a.shadowRoot && b.shadowRoot) {
+                    var shadowPatch = diff(a.shadowRoot, b.shadowRoot)
+                    if (shadowPatch ) {
+                        // a will be the default key
+                        if (Object.keys(shadowPatch).length > 1) {
+                            apply = appendPatch(apply,
+                                new VPatch(VPatch.SHADOW, a, shadowPatch))
+                        }
+                    }
+                }
+
                 apply = diffChildren(a, b, patch, apply, index)
             } else {
                 apply = appendPatch(apply, new VPatch(VPatch.VNODE, a, b))

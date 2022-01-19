@@ -6,11 +6,10 @@ var isVNode = require("../vnode/is-vnode.js")
 var isVText = require("../vnode/is-vtext.js")
 var isWidget = require("../vnode/is-widget.js")
 var handleThunk = require("../vnode/handle-thunk.js")
-var hookProperties = require('vdom-as-json/hookProperties')
 
 module.exports = createElement
 
-function createElement(vnode, opts) {
+function createElement(vnode, opts, parent) {
     var doc = opts ? opts.document || document : document
     var warn = opts ? opts.warn : null
 
@@ -28,30 +27,34 @@ function createElement(vnode, opts) {
     }
 
 
-    var node = createElementInternal(vnode, doc);
+    var node = createElementInternal(vnode, doc, parent);
 
     var props = vnode.properties
-
-    if (props) {
-      hookProperties(vnode.namespace, props);
-    }
 
     applyProperties(node, props)
 
     var children = vnode.children
 
     for (var i = 0; i < children.length; i++) {
-        var childNode = createElement(children[i], opts)
+        var childNode = createElement(children[i], opts, node)
         if (childNode) {
             node.appendChild(childNode)
         }
     }
 
+    if (vnode.shadowRoot) {
+      createElement(vnode.shadowRoot, opts, node)
+    }
+
     return node
 }
 
-function createElementInternal(vnode, doc) {
+function createElementInternal(vnode, doc, parent) {
   try {
+    if (vnode.tagName === '#shadowroot') {
+      return parent.attachShadow({ mode: 'open' });
+    }
+
     return (vnode.namespace === null) ?
       doc.createElement(vnode.tagName) :
       doc.createElementNS(vnode.namespace, vnode.tagName);

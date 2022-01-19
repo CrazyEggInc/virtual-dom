@@ -9,12 +9,13 @@ module.exports = VirtualNode
 var noProperties = {}
 var noChildren = []
 
-function VirtualNode(tagName, properties, children, key, namespace) {
+function VirtualNode(tagName, properties, children, key, namespace, shadowRoot) {
     this.tagName = tagName
     this.properties = properties || noProperties
     this.children = children || noChildren
     this.key = key != null ? String(key) : undefined
     this.namespace = (typeof namespace === "string") ? namespace : null
+    this.shadowRoot = shadowRoot
 
     var count = (children && children.length) || 0
     var descendants = 0
