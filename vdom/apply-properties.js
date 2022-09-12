@@ -22,7 +22,7 @@ function applyProperties(node, props, previous) {
           previous ? previous[propName] : undefined);
       }
 
-    } else if (isSoftSetHook(propValue)) {
+    } else if (propName !== 'attributes' && isSoftSetHook(propValue)) {
       removeProperty(node, propName, propValue, previous);
       setProperty(node, propName, propValue.value);
 
