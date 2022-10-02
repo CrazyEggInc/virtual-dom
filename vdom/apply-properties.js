@@ -3,6 +3,7 @@ var isHook = require('../vnode/is-vhook');
 var isSoftSetHook = require('./is-soft-set-hook');
 var undefinedValue = require('./undefined-value');
 var attributes = require('./attributes');
+var parseStyle = require('style-to-object');
 
 module.exports = applyProperties;
 
@@ -103,24 +104,28 @@ function patchObject(node, previous, propName, propValue) {
     node[propName] = {}
   }
 
-  var replacer = propName === "style" ? "" : undefined;
-  var index = 0;
-
+  var styleObj = propName === "style" ? (parseStyle(node.getAttribute('style') || '') || {}): {};
   for (var k in propValue) {
     var value = propValue[k];
-    value = undefinedValue.isUndefined(value) ? replacer : value;
-    node[propName][k] = value;
 
     if (propName === "style") {
-      // add unparse style property
-      if (node[propName].item(index) === '') {
-        whitespace = index > 0 ? ' ' : '';
-        property = whitespace + k + ': ' + value + ';';
-        node[propName]['cssText'] = node[propName]['cssText'] + property;
+      if (undefinedValue.isUndefined(value)) {
+        delete styleObj[k];
+      } {
+        styleObj[k] = value;
       }
+    } else {
+      value = undefinedValue.isUndefined(value) ? undefined : value;
+      node[propName][k] = value;
     }
+  }
 
-    index++;
+  if (propName === "style") {
+    var styleValue = Object.keys(styleObj).map((k) => {
+      return `${k}: ${styleObj[k]}`;
+    }).join(';');
+
+    node.setAttribute('style', styleValue);
   }
 }
 
