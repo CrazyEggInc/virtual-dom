@@ -14,4 +14,4 @@ build
 compile
 .lock-wscript
 coverage
-/node_modules/
+node_modules
