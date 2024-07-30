@@ -113,7 +113,7 @@ function patchObject(node, previous, propName, propValue) {
 
     if (propName === "style") {
       // add unparse style property
-      if (node[propName].item(index) === '') {
+      if (node[propName][index] === '') {
         whitespace = index > 0 ? ' ' : '';
         property = whitespace + k + ': ' + value + ';';
         node[propName]['cssText'] = node[propName]['cssText'] + property;
@@ -126,7 +126,6 @@ function patchObject(node, previous, propName, propValue) {
 
 function getPrototype(value) {
   // getPrototypeOf shim for older browsers
-  /* istanbul ignore else */
   if (Object.getPrototypeOf) {
     return Object.getPrototypeOf(value)
   } else {

@@ -47,7 +47,7 @@ test("sets the attribute if previous value was not an AttributeHook", function (
     }
     OtherHook.prototype.hook = function() {}
 
-    var hook1 = new OtherHook(namespace, 'the value')
+    var hook1 = new OtherHook(namespace, null)
     var hook2 = attributeHook(namespace, 'the value')
 
     var first = h('div', {'myns:myattr': hook1})
