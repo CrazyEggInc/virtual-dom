@@ -11,39 +11,15 @@
     flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = nixpkgs.legacyPackages.${system};
-
-        inherit (pkgs) glibcLocales;
-        inherit (pkgs.stdenv) isLinux;
-        inherit (pkgs.lib) optionalString;
+        pkgs = import nixpkgs { inherit system; };
       in
       {
         devShells.default = pkgs.mkShell {
-          buildInputs =
-            [
-              pkgs.nodejs_20
+          buildInputs = with pkgs; [
+            git
+            nodejs_20
 
-              # dev dependencies
-              pkgs.glibcLocales
-              pkgs.git
-            ]
-            ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
-              pkgs.inotify-tools
-              pkgs.libnotify
-            ]
-            ++ pkgs.lib.optionals pkgs.stdenv.isDarwin (
-              with pkgs.darwin.apple_sdk.frameworks;
-              [
-                terminal-notifier
-                CoreFoundation
-                CoreServices
-              ]
-            );
-
-          env = {
-            LOCALE_ARCHIVE = optionalString isLinux "${glibcLocales}/lib/locale/locale-archive";
-            LANG = "en_US.UTF-8";
-          };
+          ];
         };
       }
     );

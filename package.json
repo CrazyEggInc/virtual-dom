@@ -33,12 +33,11 @@
     "next-tick": "^1.1.0",
     "x-is-array": "0.1.0",
     "x-is-string": "0.1.0",
-    "vdom-as-json": "CrazyEggInc/vdom-as-json"
+    "vdom-as-json": "CrazyEggInc/vdom-as-json#update-deps"
   },
   "devDependencies": {
     "browserify": "^17.0.0",
     "min-document": "^2.19.0",
-    "nyc": "^17.0.0",
     "open-cli": "^8.0.0",
     "tap-dot": "^2.0.0",
     "tap-spec": "^5.0.0",
@@ -49,12 +48,7 @@
     "test": "node ./test/index.js | tap-spec",
     "dot": "node ./test/index.js | tap-dot",
     "start": "node ./index.js",
-    "cover": "nyc npm run test",
-    "view-cover": "nyc report --reporter=html && open-cli ./coverage/index.html",
-    "browser": "run-browser test/index.js",
-    "phantom": "run-browser test/index.js -b | tap-spec",
     "dist": "browserify --standalone virtual-dom index.js > dist/virtual-dom.js",
-    "travis-test": "npm run phantom && npm run cover && nyc report lcov && ((cat coverage/lcov.info | coveralls) || exit 0)",
     "release": "npm run release-patch",
     "release-patch": "git checkout master && npm version patch && git push origin master --tags && npm publish",
     "release-minor": "git checkout master && npm version minor && git push origin master --tags && npm publish",
