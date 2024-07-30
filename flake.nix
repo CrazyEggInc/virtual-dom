@@ -18,7 +18,6 @@
           buildInputs = with pkgs; [
             git
             nodejs_20
-
           ];
         };
       }
